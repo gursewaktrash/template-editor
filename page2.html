@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page2 Website</title>
+
+    <style>
+      body {
+        margin: 0 15%;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f8ff;
+      }
+
+      header {
+        background-color: #add8e6;
+        text-align: center;
+        padding: 10px;
+      }
+
+      main {
+        margin: 20px;
+        text-align: center;
+      }
+
+      .page1-section {
+        margin-top: 40px;
+      }
+
+      .page1-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+
+      .form-box {
+        background-color: #fff;
+        padding: 20px;
+        border: 2px solid #add8e6;
+        border-radius: 10px;
+        width: 50%;
+        margin: 0 auto;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      label {
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+
+      input[type="text"],
+      input[type="file"] {
+        margin-bottom: 20px;
+        padding: 10px;
+        width: 55%;
+        box-sizing: border-box;
+        border: 1px solid #add8e6;
+        border-radius: 5px;
+      }
+
+      button {
+        background-color: #add8e6;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      #outside-form {
+        margin-top: 50px;
+        position: relative;
+      }
+
+      #outside-form h2 {
+        font-size: 26px;
+        font-size: bold;
+        color: black;
+        position: absolute; /* Absolute positioning for the h2 */
+        top: 76%; /* Center the h2 vertically */
+        left: 50%; /* Center the h2 horizontally */
+        transform: translate(-50%, -50%); /* Adjust to center precisely */
+        margin: 0;
+        z-index: 1; /* Ensure the h2 is above the image */
+      }
+
+      .mainimg {
+        max-width: 500px; /* Fixed width of 500 pixels */
+        width: 100%; /* Make it responsive */
+        height: auto; /* Maintain aspect ratio */
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      #image-preview {
+        display: none;
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      #selection-container {
+        position: relative;
+        overflow: hidden;
+      }
+
+      #selection {
+        position: absolute;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        box-sizing: border-box;
+      }
+
+      #preview-img {
+        transition: transform 0.5s ease;
+        max-width: 450px;
+        max-height: 600px;
+      }
+
+      #overlay-img {
+        width: 195px;
+        position: absolute;
+        top: 50.5%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      /* Media Queries for Responsive Design */
+      @media screen and (max-width: 768px) {
+        .form-box {
+          width: 85%;
+          margin: 0;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+          width: 100%;
+        }
+
+        #outside-form h2 {
+          font-size: 18px;
+        }
+
+        .mainimg {
+          width: 100%;
+        }
+
+        #overlay-img {
+          width: 39.5%;
+          top: 50.5%; /* Adjust top position for smaller screens */
+          left: 50%; /* Center horizontally on smaller screens */
+          transform: translate(-50%, -50%);
+        }
+      }
+    </style>
+
+    <!-- Include Croppie library -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+
+    <!-- Include HTML2Canvas library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <!-- Include FileSaver.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <script>
+      var croppieInstance; // Global variable to hold the Croppie instance
+
+      function updateH2() {
+        const inputText = document.getElementById("name").value;
+        document.getElementById("name-display").textContent = inputText;
+      }
+
+      function previewImage() {
+        const fileInput = document.getElementById("file");
+        const previewImg = document.getElementById("preview-img");
+        const imagePreviewDiv = document.getElementById("image-preview");
+
+        if (fileInput.files && fileInput.files[0]) {
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            previewImg.src = e.target.result;
+            imagePreviewDiv.style.display = "block"; // Show the image preview div
+
+            // Initialize Croppie
+            croppieInstance = new Croppie(
+              document.getElementById("preview-img"),
+              {
+                viewport: { width: 150, height: 150, type: "circle" },
+                boundary: { width: 200, height: 200 },
+              }
+            );
+
+            // Enable the sliders after the image is loaded
+            $("#zoom-slider").slider("enable");
+            $("#rotation-slider").slider("enable");
+          };
+
+          reader.readAsDataURL(fileInput.files[0]);
+        }
+      }
+
+      function createImage() {
+        // Get the Croppie instance
+        const croppie = croppieInstance;
+
+        // Get the cropped circular image
+        croppie.result("canvas").then(function (result) {
+          // Set the src of the overlay image
+          document.getElementById("overlay-img").src = result;
+        });
+      }
+
+      function downloadImage() {
+        // Use HTML2Canvas to capture the content of the outside-form div
+        html2canvas(document.getElementById("outside-form"), {
+          onrendered: function (canvas) {
+            // Convert the canvas to a data URL
+            var dataUrl = canvas.toDataURL();
+
+            // Use FileSaver.js to trigger the download
+            saveAs(dataUrl, "downloaded_image.png");
+          },
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>Exam Passed</h1>
+    </header>
+
+    <main>
+      <div class="page1-section">
+        <div class="form-box">
+          <form>
+            <label for="name">Please Enter the name of person </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Enter your name"
+              oninput="updateH2()"
+            />
+
+            <label for="file">Choose a file:</label>
+            <input
+              type="file"
+              id="file"
+              name="file"
+              placeholder="No File Selected"
+              accept="image/*"
+              onchange="previewImage()"
+            />
+
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+
+        <!-- Preview Div with circular selection -->
+        <div id="image-preview" style="display: none">
+          <div id="selection-container">
+            <img id="preview-img" src="" alt="Preview Image" />
+            <div id="selection"></div>
+          </div>
+          <!-- Add a button to trigger image creation -->
+          <button onclick="createImage()">Preview Image</button>
+          <!-- Add a button to download image creation -->
+          <button onclick="downloadImage()">Download Image</button>
+        </div>
+
+        <!-- For Sample Layout -->
+        <div id="outside-form">
+          <h2 id="name-display">Name Here:</h2>
+          <img class="mainimg" src="images/exam.png" alt="Placeholder Image" />
+          <img id="overlay-img" src="images/cropped.png" alt="Overlay Image" />
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

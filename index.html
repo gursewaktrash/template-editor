@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sample Templete Editor</title>
+    <style>
+      body {
+        margin: 0 15%; /* Add margin on right and left sides */
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: white;
+      }
+
+      header {
+        background-color: #add8e6;
+        text-align: center;
+        padding: 15px;
+      }
+
+      main {
+        margin: 20px;
+        text-align: center;
+      }
+
+      .row {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 80px; /* Add space between the rows */
+      }
+
+      .image-container {
+        width: 300px;
+        height: 300px;
+        margin: 10px;
+        position: relative;
+      }
+
+      .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: 5px solid #add8e6;
+        cursor: pointer; /* Change cursor to pointer on image */
+      }
+
+      .image-title {
+        background-color: #add8e6;
+        margin-top: 5px;
+        position: relative;
+        padding: 15px;
+        width: 105%; /* Set title width to match the image container's width includened the border*/
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Brand Name</h1>
+    </header>
+
+    <main>
+      <div class="row">
+        <div class="image-container">
+          <a href="page1.html">
+            <img src="images/welcome.png" alt="Image 1" />
+          </a>
+          <div class="image-title">Welcome</div>
+        </div>
+
+        <div class="image-container">
+          <a href="page2.html">
+            <img src="images/exam.png" alt="Image 2" />
+          </a>
+          <div class="image-title">Exam Passed</div>
+        </div>
+
+        <div class="image-container">
+          <img src="images/firstsale.png" alt="Image 3" />
+          <div class="image-title">First Sale</div>
+        </div>
+
+        <div class="image-container">
+          <img src="images/monthly.png" alt="Image 4" />
+          <div class="image-title">Monthly target</div>
+        </div>
+
+        <div class="image-container">
+          <img src="images/week.png" alt="Image 5" />
+          <div class="image-title">Title 5</div>
+        </div>
+
+        <div class="image-container">
+          <img src="images/ref.png" alt="Image 6" />
+          <div class="image-title">Title 6</div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
